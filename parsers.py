@@ -1,4 +1,6 @@
 from objects import Offset, Scatter
+from datetime import datetime as dt
+from attributes import Color
 
 
 class ParserTXT:
@@ -24,10 +26,13 @@ class ParserTXT:
                     avg_velocity = float(split_row[4])
                     offsets = []
                     for i in range(8, len(split_row)):
-                        date = float(self.data[0][i].replace('D', '').replace('\n', ''))
+                        date = self.data[0][i].replace('D', '').replace('\n', '')
+                        date = dt.strptime(f'{date[0:4]}-{date[4:6]}-{date[6:8]}', '%Y-%m-%d')
                         value = float(split_row[i])
                         offset = Offset(date, value)
                         offsets.append(offset)
-                    scatter = Scatter(lon, lat, avg_velocity, offsets)
+                    color = Color()
+                    color.rgb = (255, 0, 0)
+                    scatter = Scatter(lon, lat, avg_velocity, offsets, color=color, marker='X')
                     self.data.append(scatter)
                 row_number += 1
