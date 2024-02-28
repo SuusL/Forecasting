@@ -8,7 +8,4 @@ def convert_days_to_timedelta(days):
     return delta
 
 
-def get_date_from_date_and_timedelta(date, delta):
-    return date + delta
-
 
