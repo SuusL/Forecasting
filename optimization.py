@@ -10,6 +10,7 @@ class ParabolaLine:
         self.__line = Line2D(a, b, c, self.scatter)
         self.step = step
         self.max_h_error = max_h_error
+        self.vv = None
 
     def adjust(self):
         while True:
@@ -45,6 +46,7 @@ class ParabolaLine:
         error = 0
         for offset in self.scatter.offsets:
             error += (abs(a * self.scatter.get_day_of_offset_from_reference_date(offset) + b*offset.value + c) / sqrt(a**2 + b**2))**2
+        self.vv = error
         return error
 
     @property
@@ -59,6 +61,7 @@ class ParabolaBilinear:
         self.__bilinear_line = BilinearLine2D(a, b, c, self.scatter)
         self.step = step
         self.max_h_error = max_h_error
+        self.vv = None
 
     def adjust(self):
         while True:
@@ -96,6 +99,7 @@ class ParabolaBilinear:
         for offset in self.scatter.offsets:
             x = self.scatter.get_day_of_offset_from_reference_date(offset)
             error += abs((a * x**2 + b * x + c) - offset.value)**2
+        self.vv = error
         return error
 
     @property
@@ -110,6 +114,7 @@ class ParabolaCubic:
         self.__cubic_line = CubicLine2D(a, b, c, d, self.scatter)
         self.step = step
         self.max_h_error = max_h_error
+        self.vv = None
 
     def adjust(self):
         while True:
@@ -155,6 +160,7 @@ class ParabolaCubic:
         for offset in self.scatter.offsets:
             x = self.scatter.get_day_of_offset_from_reference_date(offset)
             error += abs((a * x**3 + b * x**2 + c * x + d) - offset.value)**2
+        self.vv = error
         return error
 
     @property

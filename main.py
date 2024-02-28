@@ -7,6 +7,7 @@ from parsers import ParserTXT
 from optimization import ParabolaLine, ParabolaBilinear, ParabolaCubic
 from rendering.mpl_plotter_2D import Plot2D
 from datetime import datetime
+from math import sqrt
 
 
 class Ui(QtWidgets.QMainWindow):
@@ -53,6 +54,7 @@ class Interface():
 
 
     def set_scatter_to_comboboxes(self):
+        self.window.comboBox.clear()
         scatter = [f'Point({scatter.lon},{scatter.lat})' for scatter in self.parser.data[1:]]
         self.window.comboBox.addItems(scatter)
 
@@ -64,6 +66,7 @@ class Interface():
         self.bilinear_optimizer.adjust()
         self.cubic_optimizer = ParabolaCubic(self.parser.data[int(self.window.comboBox.currentIndex())+1])
         self.cubic_optimizer.adjust()
+        self.export_sko()
 
     def plot_trends(self):
 
@@ -89,6 +92,15 @@ class Interface():
             days = (datetime.strptime(self.window.lineEdit_3.text(), '%d.%m.%Y') - scatter.reference_date).days
             value = (cubic_line.a * days**3 + cubic_line.b * days**2 + cubic_line.c * days + cubic_line.d)
             self.window.lineEdit_4.setText(f'{round(value, 3)}')
+
+    def export_sko(self):
+        linear_optimizer, linear_scatter = self.linear_optimizer, self.linear_optimizer.scatter
+        bilinear_optimizer, bilinear_scatter = self.bilinear_optimizer, self.bilinear_optimizer.scatter
+        cubic_optimizer, cubic_scatter = self.cubic_optimizer, self.cubic_optimizer.scatter
+        num_offsets = len(linear_scatter.offsets) - 1
+        with open('./sko.txt', 'w') as file:
+            file.write(f'Точка (долгота, широта), СКО прямой, СКО полинома 2-ого порядка, СКО полинома 3-ого порядка\n')
+            file.write(f'Point ({linear_scatter.lon} {linear_scatter.lat}), {round(sqrt(linear_optimizer.vv/num_offsets),3)}, {round(sqrt(bilinear_optimizer.vv/num_offsets),3)}, {round(sqrt(cubic_optimizer.vv/num_offsets),3)}')
 
 
 if __name__ == "__main__":

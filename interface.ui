@@ -90,7 +90,7 @@
          <item row="3" column="0" colspan="3">
           <widget class="QLineEdit" name="lineEdit_3">
            <property name="text">
-            <string>17.04.2023</string>
+            <string>10.07.2023</string>
            </property>
            <property name="placeholderText">
             <string>Дата, на которую необходимо выполнить прогноз</string>
